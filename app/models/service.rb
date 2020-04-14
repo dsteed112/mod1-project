@@ -1,4 +1,4 @@
 class Service < ActiveRecord::Base
-    has_many :vans
-    has_many :companies, through: :vans
+    has_many :van_services, dependent: :destroy
+    has_many :vans, through: :van_services
 end
