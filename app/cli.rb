@@ -1,19 +1,17 @@
- class Cli
-    puts "Welcome to Vehicle Fleet Maintenance Manager"
-    prompt = TTY::Prompt.new
-    prompt.select("Please make a selection:", %w(Log_In, Create_Account))
-end
-
-#     def welcome_menu
-#         puts "Welcome to Vehicle Fleet Maintenance Manager"
-#         puts "enter username:"
-#         user_name = gets.chomp
-#         if user_name == already exists
-#             load_profile
-#         else
-#             create_profile
-#         end
-#     end
+class Cli
+    
+    def welcome_menu
+        puts "Welcome to Vehicle Fleet Maintenance Manager"
+            prompt = TTY::Prompt.new
+            welcome = prompt.select("Please make a selection:", %w(Log_In Create_Account))
+        if welcome == "Log_In"
+            puts "Enter username:"
+            user_name = gets.chomp
+            #load profile  
+        else welcome == "Create_Account"
+            create_profile
+        end
+    end
 
 #     def load_profile
 #         puts #{company_name} not locally defined
@@ -28,26 +26,56 @@ end
 #         end
 #     end
 
-#     def create_profile
-#         puts "Please enter company name:"
-#         company_name = gets.chomp
-#         build_fleet
-#     end
+    def create_profile
+        prompt = TTY::Prompt.new
+        result = prompt.collect do
+            key(:user_name).ask('User Name?')
+          
+            key(:company_name).ask('Company Name?')
 
-#     def build_fleet
-#         puts "Please enter your fleet info below"
-#         fleet = []
-#         vehicle = # nick_name = gets.chomp, year = gets.chomp, make = gets.chomp, model = gets.chomp, mileage = gets.chomp
-#         fleet << vehicle
-#         add_another_van
-#     end
+        
+        
+        end
+        latest_company = Company.create(
+            user_name: result[:user_name],
+            company_name: result[:company_name]
+        )
+        build_fleet (latest_company)
+    end
 
-#     def add_another_van
-#         puts "Would you like to add another vehicle to your fleet? Y or N"
-#         if choice == "y"
-#             build_fleet
-#         else choice == "n"
-#             load_profile
-#         end
-#     end
-# end
+    def build_fleet (company)
+        puts "Please enter your fleet info below"
+        prompt = TTY::Prompt.new
+        response = prompt.select("Please make a selection:", %w(Add_van_to_fleet Finished))
+        if response == "Add_van_to_fleet"
+            create_van (company)
+            build_fleet (company)
+        else response == "Finished"
+            puts "Thanks for building your fleet!"
+        end
+        
+    end
+
+    def create_van (company)
+        prompt = TTY::Prompt.new
+        result = prompt.collect do
+            key(:nick_name).ask('Van Name?')
+            key(:year).ask('Year?')
+            key(:make).ask('Make?')
+            key(:model).ask('Model?')
+            key(:mileage).ask('Mileage?')
+        end
+        
+        latest_van = Van.create(
+            nick_name: result[:nick_name],
+            year: result[:year],
+            make: result[:make],
+            model: result[:model],
+            mileage: result[:mileage],
+            company_id: company.id
+        )
+
+
+    end
+
+end
