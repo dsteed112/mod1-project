@@ -3,8 +3,6 @@ Van.destroy_all
 Service.destroy_all
 Company.destroy_all
 
-
-
 company1 = Company.create(
     user_name: 'Alfred Pennyworth',
     company_name: 'Wayne Enterprises'
@@ -40,7 +38,6 @@ van1 = Van.create(
     model: 'Transit',
     mileage: 2000,
     company_id: company1
-
 )
 
 van2 = Van.create(
@@ -50,7 +47,6 @@ van2 = Van.create(
     model: 'Transit',
     mileage: 5500,
     company_id: company1
-
 )
 
 van3 = Van.create(
@@ -60,11 +56,9 @@ van3 = Van.create(
     model: "Transit",
     mileage: 1200,
     company_id: company1
-
 )
 
 van_service1 = VanService.create(
     van_id: van2, 
     service_id: service1
-
 )
