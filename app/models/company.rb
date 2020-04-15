@@ -1,4 +1,3 @@
 class Company < ActiveRecord::Base
-    has_many :vans
-    has_many :services, through: :vans
+    has_many :vans, dependent: :destroy
 end
