@@ -5,4 +5,4 @@ Bundler.require
 require_all 'app'
 
 
-binding.pry
+# binding.pry
