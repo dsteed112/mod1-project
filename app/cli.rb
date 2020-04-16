@@ -1,15 +1,14 @@
 class Cli
 
     attr_reader :company, :service
-    $prompt = TTY::Prompt.new(symbols:{marker: '🚐'})
+    $prompt = TTY::Prompt.new
     $pastel = Pastel.new
 
     def welcome_menu
         font = TTY::Font.new(:doom)
         pastel = Pastel.new
         puts pastel.green(font.write("Van Manager"))
-        # binding.pry
-            welcome = $prompt.select("Please make a selection:", %w(Log_In Create_Account))
+            welcome = $prompt.select("Please make a selection:", %w(Log_In Create_Account), marker:"🚐")
         if welcome == "Log_In"
             puts "Enter username:"
             user_name = gets.chomp
@@ -19,19 +18,10 @@ class Cli
             @company = Company.create(user_name: user_name)
             create_profile
         end
-        # binding.pry
     end
 
-    # def proper_service
-    #    if Van.mileage >= 5000 < 10000
-    #     puts service1
-    #    end
-    # end
-
     def load_profile
-        # puts company_name
-        # built_fleet
-            profile = $prompt.select("Please make a selection:", %w(View_Fleet Update_Vehicle_Mileage Exit))
+            profile = $prompt.select("Please make a selection:", %w(View_Fleet Update_Vehicle_Mileage Exit), marker:"🚐")
         if profile == "Update_Vehicle_Mileage"
             update_existing_vans
         elsif profile == "View_Fleet"
@@ -45,14 +35,13 @@ class Cli
 
     def update_existing_vans
         nick_names = company.vans.pluck(:nick_name)
-        result = $prompt.select("Please choose the van you'd like to update.", nick_names)
+        result = $prompt.select("Please choose the van you'd like to update.", nick_names, marker:"🚐")
         user_van_choice = Van.find_by(nick_name: result)
         puts "Enter updated mileage."
         new_mileage = gets.chomp
         user_van_choice.update(mileage: new_mileage)
         load_profile
     end
-
 
     def create_profile
         result = $prompt.collect do
@@ -65,7 +54,7 @@ class Cli
 
     def build_fleet
         puts "Please enter your fleet info below"
-        response = $prompt.select("Please make a selection:", %w(Add_Van_to_Fleet View_Fleet Finished))
+        response = $prompt.select("Please make a selection:", %w(Add_Van_to_Fleet View_Fleet Finished), marker:"🚐")
         if response == "Add_Van_to_Fleet"
             create_van
             build_fleet
@@ -73,8 +62,7 @@ class Cli
             existing_fleet
         else response == "Finished"
             puts "Thanks for building your fleet!"
-        end
-        
+        end 
     end
 
     def create_van
@@ -98,37 +86,18 @@ class Cli
 
     def existing_fleet
         company.reload
-        # binding.pry
-        # service_id = VanService.find_by(service_id)
-        # @vanservice = vanservice.find_by(service_id)
-        # puts current_fleet = company.vans.pluck(:nick_name, :year, :make, :model, :mileage, :" ")
         company.vans.each do |van|
             puts "#{van.nick_name}\n#{van.year}\n#{van.make}\n#{van.model}\n#{van.mileage}\n"
             puts $pastel.red("#{service_needed(van.mileage)}\n\n")
         end
 
-        # current_fleet = current_fleet.map {|el| el[4]}
-        # current_fleet.each do |mileage|
-        #     if mileage < 5000
-        #         puts "no service needed"
-        #     elsif mileage >= 5000 && mileage < 10000
-        #         puts Service.find_by(name:"5k")
-        #     elsif mileage >= 10000 && mileage < 15000
-        #         puts Service.find_by(name:"10k")
-        #     else mileage >= 15000 && mileage < 20000
-        #         puts Service.find_by(name:"15k")
-        #     end
-       
-        
-        #binding.pry
-        profile = $prompt.select("Please make a selection:", %w(Update_Vehicle_Mileage Exit))
+        profile = $prompt.select("Please make a selection:", %w(Update_Vehicle_Mileage Exit), marker:"🚐")
         if profile == "Update_Vehicle_Mileage"
             update_existing_vans
         else profile == "Exit"
             exit
         end
     end
-
 
     def service_needed(mileage)
         if mileage >= 5000 && mileage < 10000
@@ -139,9 +108,4 @@ class Cli
             Service.find_by(name:"15k").description
         end
     end
-
-
-    # def exit
-    # end
-
 end
