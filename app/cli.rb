@@ -1,6 +1,6 @@
 class Cli
 
-    attr_reader :company
+    attr_reader :company, :vanservice
 
     def welcome_menu
         puts "Welcome to Vehicle Fleet Maintenance Manager"
@@ -91,7 +91,10 @@ class Cli
     end
 
     def existing_fleet
-        puts company.vans.pluck(:nick_name, :year, :make, :model, :mileage, :" ")
+        # binding.pry
+        # service_id = VanService.find_by(service_id)
+        # @vanservice = vanservice.find_by(service_id)
+        puts company.vans.pluck(:nick_name, :year, :make, :model, :mileage, :@vanservice, :" ")
         prompt = TTY::Prompt.new
             profile = prompt.select("Please make a selection:", %w(Update_Vehicle_Info Exit))
         if profile == "Update_Vehicle_Info"
