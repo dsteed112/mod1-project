@@ -1,19 +1,19 @@
 class Cli
 
-    attr_reader :company, :vanservice
+    attr_reader :company, :service
+    $prompt = TTY::Prompt.new(symbols:{marker: '🚐'})
 
     def welcome_menu
         font = TTY::Font.new(:doom)
         pastel = Pastel.new
         puts pastel.green(font.write("Van Manager"))
         # binding.pry
-            prompt = TTY::Prompt.new
-            welcome = prompt.select("Please make a selection:", %w(Log_In Create_Account))
+            welcome = $prompt.select("Please make a selection:", %w(Log_In Create_Account))
         if welcome == "Log_In"
             puts "Enter username:"
             user_name = gets.chomp
             @company = Company.find_by(user_name: user_name)
-            load_profile  
+            load_profile
         else welcome == "Create_Account"
             @company = Company.create(user_name: user_name)
             create_profile
@@ -21,11 +21,16 @@ class Cli
         # binding.pry
     end
 
+    # def proper_service
+    #    if Van.mileage >= 5000 < 10000
+    #     puts service1
+    #    end
+    # end
+
     def load_profile
         # puts company_name
         # built_fleet
-            prompt = TTY::Prompt.new
-            profile = prompt.select("Please make a selection:", %w(View_Fleet Update_Vehicle_Mileage Exit))
+            profile = $prompt.select("Please make a selection:", %w(View_Fleet Update_Vehicle_Mileage Exit))
         if profile == "Update_Vehicle_Mileage"
             update_existing_vans
         elsif profile == "View_Fleet"
@@ -38,8 +43,7 @@ class Cli
 
     def update_existing_vans
         nick_names = company.vans.pluck(:nick_name)
-        prompt = TTY::Prompt.new
-        result = prompt.select("Please choose the van you'd like to update.", nick_names)
+        result = $prompt.select("Please choose the van you'd like to update.", nick_names)
         user_van_choice = Van.find_by(nick_name: result)
         puts "Enter updated mileage."
         new_mileage = gets.chomp
@@ -48,8 +52,7 @@ class Cli
     end
 
     def create_profile
-        prompt = TTY::Prompt.new
-        result = prompt.collect do
+        result = $prompt.collect do
             key(:user_name).ask('User Name?')
             key(:company_name).ask('Company Name?')
         end
@@ -59,8 +62,7 @@ class Cli
 
     def build_fleet
         puts "Please enter your fleet info below"
-        prompt = TTY::Prompt.new
-        response = prompt.select("Please make a selection:", %w(Add_Van_to_Fleet View_Fleet Finished))
+        response = $prompt.select("Please make a selection:", %w(Add_Van_to_Fleet View_Fleet Finished))
         if response == "Add_Van_to_Fleet"
             create_van
             build_fleet
@@ -73,8 +75,7 @@ class Cli
     end
 
     def create_van
-        prompt = TTY::Prompt.new
-        result = prompt.collect do
+        result = $prompt.collect do
             key(:nick_name).ask('Van Name?')
             key(:year).ask('Year?')
             key(:make).ask('Make?')
@@ -93,21 +94,15 @@ class Cli
     end
 
     def existing_fleet
+        # @service_id = VanService.service_id
+        # @vanservice = VanService.find_by(service_id: @service_id)
         # binding.pry
-        # service_id = VanService.find_by(service_id)
-        # @vanservice = vanservice.find_by(service_id)
-        puts company.vans.pluck(:nick_name, :year, :make, :model, :mileage, :@vanservice, :" ")
-        prompt = TTY::Prompt.new
-            profile = prompt.select("Please make a selection:", %w(Update_Vehicle_Info Exit))
-        if profile == "Update_Vehicle_Info"
+        puts company.vans.pluck(:nick_name, :year, :make, :model, :mileage, :" ")
+        profile = $prompt.select("Please make a selection:", %w(Update_Vehicle_Mileage Exit))
+        if profile == "Update_Vehicle_Mileage"
             update_existing_vans
         else profile == "Exit"
             exit
         end
     end
-
-
-    # def exit
-    # end
-
 end
