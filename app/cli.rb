@@ -25,8 +25,8 @@ class Cli
         # puts company_name
         # built_fleet
             prompt = TTY::Prompt.new
-            profile = prompt.select("Please make a selection:", %w(View_Fleet Update_Vehicle_Info Exit))
-        if profile == "Update_Vehicle_Info"
+            profile = prompt.select("Please make a selection:", %w(View_Fleet Update_Vehicle_Mileage Exit))
+        if profile == "Update_Vehicle_Mileage"
             update_existing_vans
         elsif profile == "View_Fleet"
             puts company.company_name
