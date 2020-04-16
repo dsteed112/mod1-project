@@ -12,7 +12,7 @@ class Cli
             welcome = $prompt.select("Please make a selection:", %w(Log_In Create_Account))
         if welcome == "Log_In"
             puts "Enter username:"
-            user_name = gets.chomp
+            user_name = gets.chomp.downcase
             @company = Company.find_by(user_name: user_name)
             load_profile
         else welcome == "Create_Account"
@@ -35,7 +35,7 @@ class Cli
         if profile == "Update_Vehicle_Mileage"
             update_existing_vans
         elsif profile == "View_Fleet"
-            puts company.company_name
+            puts $pastel.yellow(company)
             existing_fleet
             
         else profile == "Exit"
@@ -56,9 +56,9 @@ class Cli
 
     def create_profile
         result = $prompt.collect do
-            key(:user_name).ask('User Name?')
+            key(:user_name.downcase).ask('User Name?')
             key(:company_name).ask('Company Name?')
-        end
+        end 
         company.company_name = result[:company_name]
         build_fleet
     end
