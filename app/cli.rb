@@ -2,6 +2,7 @@ class Cli
 
     attr_reader :company, :service
     $prompt = TTY::Prompt.new(symbols:{marker: '🚐'})
+    $pastel = Pastel.new
 
     def welcome_menu
         font = TTY::Font.new(:doom)
@@ -36,6 +37,7 @@ class Cli
         elsif profile == "View_Fleet"
             puts company.company_name
             existing_fleet
+            
         else profile == "Exit"
             exit
         end
@@ -50,6 +52,7 @@ class Cli
         user_van_choice.update(mileage: new_mileage)
         load_profile
     end
+
 
     def create_profile
         result = $prompt.collect do
@@ -94,10 +97,30 @@ class Cli
     end
 
     def existing_fleet
-        # @service_id = VanService.service_id
-        # @vanservice = VanService.find_by(service_id: @service_id)
+        company.reload
         # binding.pry
-        puts company.vans.pluck(:nick_name, :year, :make, :model, :mileage, :" ")
+        # service_id = VanService.find_by(service_id)
+        # @vanservice = vanservice.find_by(service_id)
+        # puts current_fleet = company.vans.pluck(:nick_name, :year, :make, :model, :mileage, :" ")
+        company.vans.each do |van|
+            puts "#{van.nick_name}\n#{van.year}\n#{van.make}\n#{van.model}\n#{van.mileage}\n"
+            puts $pastel.red("#{service_needed(van.mileage)}\n\n")
+        end
+
+        # current_fleet = current_fleet.map {|el| el[4]}
+        # current_fleet.each do |mileage|
+        #     if mileage < 5000
+        #         puts "no service needed"
+        #     elsif mileage >= 5000 && mileage < 10000
+        #         puts Service.find_by(name:"5k")
+        #     elsif mileage >= 10000 && mileage < 15000
+        #         puts Service.find_by(name:"10k")
+        #     else mileage >= 15000 && mileage < 20000
+        #         puts Service.find_by(name:"15k")
+        #     end
+       
+        
+        #binding.pry
         profile = $prompt.select("Please make a selection:", %w(Update_Vehicle_Mileage Exit))
         if profile == "Update_Vehicle_Mileage"
             update_existing_vans
@@ -105,4 +128,20 @@ class Cli
             exit
         end
     end
+
+
+    def service_needed(mileage)
+        if mileage >= 5000 && mileage < 10000
+            Service.find_by(name:"5k").description
+        elsif mileage >= 10000 && mileage < 15000
+            Service.find_by(name:"10k").description
+        elsif mileage >= 15000 && mileage < 20000
+            Service.find_by(name:"15k").description
+        end
+    end
+
+
+    # def exit
+    # end
+
 end
