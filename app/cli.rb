@@ -1,7 +1,7 @@
 class Cli
 
     attr_reader :company
-    
+
     def welcome_menu
         puts "Welcome to Vehicle Fleet Maintenance Manager"
         # binding.pry
@@ -19,28 +19,30 @@ class Cli
         # binding.pry
     end
 
-    def load_profile()
+    def load_profile
         # puts company_name
         # built_fleet
             prompt = TTY::Prompt.new
-            profile = prompt.select("Please make a selection:", %w(Update_Vehicle_Info Exit))
+            profile = prompt.select("Please make a selection:", %w(View_Fleet Update_Vehicle_Info Exit))
         if profile == "Update_Vehicle_Info"
             update_existing_vans
+        elsif profile == "View_Fleet"
+            puts company.company_name
+            existing_fleet
         else profile == "Exit"
             exit
         end
     end
 
     def update_existing_vans
-        # binding.pry
         nick_names = company.vans.pluck(:nick_name)
         prompt = TTY::Prompt.new
-        result = prompt.select("please choose nick_name of van you'd like to update.", nick_names)
+        result = prompt.select("Please choose the van you'd like to update.", nick_names)
         user_van_choice = Van.find_by(nick_name: result)
         puts "Enter updated mileage."
         new_mileage = gets.chomp
         user_van_choice.update(mileage: new_mileage)
-        update_existing_vans
+        load_profile
     end
 
     def create_profile
@@ -56,11 +58,12 @@ class Cli
     def build_fleet
         puts "Please enter your fleet info below"
         prompt = TTY::Prompt.new
-        response = prompt.select("Please make a selection:", %w(Add_van_to_fleet Finished))
-        if response == "Add_van_to_fleet"
-            # binding.pry
+        response = prompt.select("Please make a selection:", %w(Add_Van_to_Fleet View_Fleet Finished))
+        if response == "Add_Van_to_Fleet"
             create_van
             build_fleet
+        elsif response == "View_Fleet"
+            existing_fleet
         else response == "Finished"
             puts "Thanks for building your fleet!"
         end
@@ -87,9 +90,17 @@ class Cli
         )
     end
 
-    # def built_fleet
-    
-    # end
+    def existing_fleet
+        puts company.vans.pluck(:nick_name, :year, :make, :model, :mileage, :" ")
+        prompt = TTY::Prompt.new
+            profile = prompt.select("Please make a selection:", %w(Update_Vehicle_Info Exit))
+        if profile == "Update_Vehicle_Info"
+            update_existing_vans
+        else profile == "Exit"
+            exit
+        end
+    end
+
 
     # def exit
     # end
