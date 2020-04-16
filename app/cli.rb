@@ -1,12 +1,10 @@
 class Cli
 
-    attr_reader :company, :vanservice
-
+    attr_reader :company
+    $pastel = Pastel.new
     def welcome_menu
         font = TTY::Font.new(:doom)
-        pastel = Pastel.new
-        puts pastel.green(font.write("Van Manager"))
-        # binding.pry
+        puts $pastel.green(font.write("Van Manager"))
             prompt = TTY::Prompt.new
             welcome = prompt.select("Please make a selection:", %w(Log_In Create_Account))
         if welcome == "Log_In"
@@ -31,6 +29,7 @@ class Cli
         elsif profile == "View_Fleet"
             puts company.company_name
             existing_fleet
+            
         else profile == "Exit"
             exit
         end
@@ -46,6 +45,7 @@ class Cli
         user_van_choice.update(mileage: new_mileage)
         load_profile
     end
+
 
     def create_profile
         prompt = TTY::Prompt.new
@@ -93,16 +93,47 @@ class Cli
     end
 
     def existing_fleet
+        company.reload
         # binding.pry
         # service_id = VanService.find_by(service_id)
         # @vanservice = vanservice.find_by(service_id)
-        puts company.vans.pluck(:nick_name, :year, :make, :model, :mileage, :service_id, :" ")
+        # puts current_fleet = company.vans.pluck(:nick_name, :year, :make, :model, :mileage, :" ")
+        company.vans.each do |van|
+            puts "#{van.nick_name}\n#{van.year}\n#{van.make}\n#{van.model}\n#{van.mileage}\n"
+            puts $pastel.red("#{service_needed(van.mileage)}\n\n")
+        end
+
+        # current_fleet = current_fleet.map {|el| el[4]}
+        # current_fleet.each do |mileage|
+        #     if mileage < 5000
+        #         puts "no service needed"
+        #     elsif mileage >= 5000 && mileage < 10000
+        #         puts Service.find_by(name:"5k")
+        #     elsif mileage >= 10000 && mileage < 15000
+        #         puts Service.find_by(name:"10k")
+        #     else mileage >= 15000 && mileage < 20000
+        #         puts Service.find_by(name:"15k")
+        #     end
+       
+        
+        #binding.pry
         prompt = TTY::Prompt.new
-            profile = prompt.select("Please make a selection:", %w(Update_Vehicle_Info Exit))
-        if profile == "Update_Vehicle_Info"
+            profile = prompt.select("Please make a selection:", %w(Update_Vehicle_Mileage Exit))
+        if profile == "Update_Vehicle_Mileage"
             update_existing_vans
         else profile == "Exit"
             exit
+        end
+    end
+
+
+    def service_needed(mileage)
+        if mileage >= 5000 && mileage < 10000
+            Service.find_by(name:"5k").description
+        elsif mileage >= 10000 && mileage < 15000
+            Service.find_by(name:"10k").description
+        elsif mileage >= 15000 && mileage < 20000
+            Service.find_by(name:"15k").description
         end
     end
 
