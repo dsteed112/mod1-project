@@ -3,7 +3,9 @@ class Cli
     attr_reader :company
 
     def welcome_menu
-        puts "Welcome to Vehicle Fleet Maintenance Manager"
+        font = TTY::Font.new(:doom)
+        pastel = Pastel.new
+        puts pastel.green(font.write("Van Manager"))
         # binding.pry
             prompt = TTY::Prompt.new
             welcome = prompt.select("Please make a selection:", %w(Log_In Create_Account))
