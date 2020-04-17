@@ -39,3 +39,7 @@ If a vehicle is at a mileage where a service is required it will appear as the l
 Now you can exit the application, log back in, update mileage of vehicles in your fleet and if service is needed on a vehicle take that bad boy in for service to keep your fleet running for as long as possible.
 
 Thanks for using Van Manager!
+
+Here is a brief video showing the application in action:
+
+https://www.youtube.com/watch?v=0IFwkL7LUAQ&feature=youtu.be
