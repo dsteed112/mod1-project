@@ -25,8 +25,7 @@ class Cli
         if profile == "Update_Vehicle_Mileage"
             update_existing_vans
         elsif profile == "View_Fleet"
-            puts company.company_name
-            # binding.pry
+            puts $pastel.yellow("\n#{company.company_name}\n")
             existing_fleet
             
         else profile == "Exit"
@@ -45,11 +44,6 @@ class Cli
     end
 
     def create_profile
-        # result = $prompt.collect do
-        #     key(:user_name).ask('User Name?')
-        #     key(:company_name).ask('Company Name?')
-        # end
-        # company.company_name = result[:company_name]
         create_username_and_company
         build_fleet
     end
@@ -119,6 +113,20 @@ class Cli
             Service.find_by(name:"10k").description
         elsif mileage >= 15000 && mileage < 20000
             Service.find_by(name:"15k").description
+        elsif mileage >= 20000 && mileage < 25000
+            Service.find_by(name:"20k").description
+        elsif mileage >= 25000 && mileage < 30000
+            Service.find_by(name:"25k").description
+        elsif mileage >= 30000 && mileage < 35000
+            Service.find_by(name:"30k").description
+        elsif mileage >= 35000 && mileage < 40000
+            Service.find_by(name:"35k").description
+        elsif mileage >= 40000 && mileage < 45000
+            Service.find_by(name:"40k").description
+        elsif mileage >= 45000 && mileage < 50000
+            Service.find_by(name:"45k").description
+        elsif mileage >= 50000 && mileage < 100000
+            Service.find_by(name:"50k").description
         end
     end
 end
