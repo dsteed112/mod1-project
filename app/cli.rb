@@ -1,6 +1,6 @@
 class Cli
 
-    attr_reader :company, :service
+    attr_reader :company, :service, :van
     $prompt = TTY::Prompt.new
     $pastel = Pastel.new
 
@@ -26,6 +26,7 @@ class Cli
             update_existing_vans
         elsif profile == "View_Fleet"
             puts company.company_name
+            # binding.pry
             existing_fleet
             
         else profile == "Exit"
@@ -44,11 +45,12 @@ class Cli
     end
 
     def create_profile
-        result = $prompt.collect do
-            key(:user_name).ask('User Name?')
-            key(:company_name).ask('Company Name?')
-        end
-        company.company_name = result[:company_name]
+        # result = $prompt.collect do
+        #     key(:user_name).ask('User Name?')
+        #     key(:company_name).ask('Company Name?')
+        # end
+        # company.company_name = result[:company_name]
+        create_username_and_company
         build_fleet
     end
 
@@ -65,6 +67,18 @@ class Cli
         end 
     end
 
+    def create_username_and_company
+        result = $prompt.collect do
+            key(:company_name).ask('Company Name:')
+            key(:user_name).ask('Enter Desired Username:')
+        end
+
+        latest_company = Company.create(
+            company_name: result[:company_name],
+            user_name: result[:user_name]
+        )
+    end
+
     def create_van
         result = $prompt.collect do
             key(:nick_name).ask('Van Name?')
@@ -73,7 +87,6 @@ class Cli
             key(:model).ask('Model?')
             key(:mileage).ask('Mileage?')
         end
-        
         latest_van = Van.create(
             nick_name: result[:nick_name],
             year: result[:year],
